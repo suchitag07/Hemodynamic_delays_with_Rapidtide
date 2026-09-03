@@ -98,19 +98,19 @@ theFitter.setrange(global_lagmin, global_lagmax)
 ```
 print("BEFORE REFINEMENT (INITLAGHIGH):","lagmin=", self.lagmin,"lagmax=", self.lagmax,"maxlag_init=", maxlag_init)
 ```
-![](https://gist.github.com/user-attachments/assets/b4a511ac-5471-4679-bf09-f3fe6282b136)
+![](https://github.com/user-attachments/assets/0c9107c9-8629-45ff-993c-e1eaa8916d8c)
 
 #### simFuncClasses.py line 1902: 
 ```
 print("BAD LAG AFTER REFINEMENT (FITLAGHIGH):","lagmin=", self.lagmin,"lagmax=", self.lagmax,"(refined)maxlag=", maxlag)
 ```
-![](https://gist.github.com/user-attachments/assets/9810101c-bc16-4f73-b3b6-c081d6118a27)
+![](https://github.com/user-attachments/assets/10b68da0-8b95-401e-b91e-a479917a0c5f)
 
 #### simFuncClasses.py line 1925: 
 ```
 print("FIT FAIL SUMMARY:","maxlag_init=", maxlag_init, "maxlag=", maxlag, "maxval_init=", maxval_init, "maxval=", maxval, "maxsigma_init=", maxsigma_init, "maxsigma=", maxsigma, "maskval=", maskval, "failreason=", failreason, "fitfail=", fitfail)
 ```
-![](https://gist.github.com/user-attachments/assets/c64e058f-8993-4827-ba73-a62958123527)
+![](https://github.com/user-attachments/assets/97b72de0-7b02-4a27-b166-b41781bd74d5)
 
 ### (ii) Despeckling routine check
 - To track changes in lagmin/lagmax between despeckling subpasses, I inserted the following print statements
@@ -119,19 +119,19 @@ print("FIT FAIL SUMMARY:","maxlag_init=", maxlag_init, "maxlag=", maxlag, "maxva
 ```
 print(f"START despeckle pass {thepass}, subpass {despecklepass + 1}:","theFitter.lagmin=", theFitter.lagmin,"theFitter.lagmax=", theFitter.lagmax,"theFitter.lagmod=", theFitter.lagmod,"optiondict_lagmin=", optiondict["lagmin"],"optiondict_lagmax=", optiondict["lagmax"])
 ```
-![](https://gist.github.com/user-attachments/assets/86508330-13c5-4e45-a8fb-2a8c01ac874e)
+![](https://github.com/user-attachments/assets/0e842ea6-5bd0-467e-a053-355b8c9c2d8d)
 
 #### fitSimFuncMap.py line 936: 
 ```
 print(f"BEFORE fitcorr despeckle pass {thepass}, subpass {despecklepass + 1}:","theFitter.lagmin=", theFitter.lagmin,"theFitter.lagmax=", theFitter.lagmax,"theFitter.lagmod=", theFitter.lagmod,"optiondict_lagmin=", optiondict["lagmin"],"optiondict_lagmax=", optiondict["lagmax"],"numdespeckled=", numdespeckled)
 ``` 
-![](https://gist.github.com/user-attachments/assets/5281f05e-44e3-4aba-80b4-6519e5eb48e5)
+![](https://github.com/user-attachments/assets/2b453122-65ba-49da-94ea-c97219c5700b)
 
 #### simfuncfit.py line 383 (fitcorr): 
 ```
 print("FITCORR ENTRY:","thefitter.lagmin=", thefitter.lagmin,"thefitter.lagmax=", thefitter.lagmax)
 ```
-![](https://gist.github.com/user-attachments/assets/b5334f8f-7d0f-4d03-a3a4-810766c79be0)
+![](https://github.com/user-attachments/assets/de9bcc7d-7663-41d9-bcb5-2c185862203b)
 
 - During despeckling (`initiallag is not None`), `onesimfuncfit` calls on the method `setrange` (line 122/123), which accepts the input values as: `thefitter.setrange(initiallag - despeckle_thresh / 2.0, initiallag + despeckle_thresh / 2.0)`. `setrange` takes the first argument and assigns it to `lagmin`, and the second to `lagmax`. 
 
@@ -143,19 +143,19 @@ new_lagmin = initiallag - despeckle_thresh / 2.0
 new_lagmax = initiallag + despeckle_thresh / 2.0
 print("onesimfuncfit :","initiallag=", initiallag,"despeckle_thresh=", despeckle_thresh,"setrange.lagmin=", new_lagmin,"setrange.lagmax=", new_lagmax)
 ```
-![](https://gist.github.com/user-attachments/assets/c9248f67-1798-4f51-aab6-4211d877d227)
+![](https://github.com/user-attachments/assets/3be941e6-2c22-4310-bc9e-89e659ce04fb)
 
 #### simuncfit.py line 579 (fitcorr): 
 ```
 print("FITCORR EXIT:","thefitter.lagmin=", thefitter.lagmin,"thefitter.lagmax=", thefitter.lagmax)
 ```
-![](https://gist.github.com/user-attachments/assets/39c6a83e-7889-458d-85fd-2157f6bedebe)
+![](https://github.com/user-attachments/assets/3f9127ec-9c00-4302-a8fd-f5f5bc63154b)
 
 #### fitSimFuncMap.py line 975: 
 ```
 print(f"AFTER fitcorr despeckle pass {thepass}, subpass {despecklepass + 1}:","theFitter.lagmin=", theFitter.lagmin,"theFitter.lagmax=",theFitter.lagmax,"theFitter.lagmod=", theFitter.lagmod,"optiondict_lagmin=", optiondict["lagmin"],"optiondict_lagmax=", optiondict["lagmax"],"numdespeckled=", numdespeckled) 
 ```
-![](https://gist.github.com/user-attachments/assets/45d09743-7ce9-4fbe-8f7a-417cf2afe566)
+![](https://github.com/user-attachments/assets/9f1b6d6a-b12c-4fae-a01c-e4348793958b)
 
 ***
 
