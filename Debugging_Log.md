@@ -24,11 +24,11 @@ We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor 
 
 ### Solution/Outcome
 
-- ***Important note: The observed failure pattern was driven by how `lagmin`/`lagmax` drifted during voxel-wise despeckling (which I tracked). In some cases, this resulted in a ~20% fit failure rate (manageable), but in many cases it rose to ~70% ([problematic](https://gist.github.com/suchitag07/cb6e6b1395bc52ab35c16c499edd798b#replication-of-prepost-bug-fix-output-with-revised-command)).***
+- ***Important note: The observed failure pattern was driven by how `lagmin`/`lagmax` drifted during voxel-wise despeckling (which I tracked). In some cases, this resulted in a ~20% fit failure rate (manageable), but in many cases it rose to ~70% ([problematic](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#replication-of-prepost-bug-fix-output-with-revised-command)).***
 - To fix this, I reset the search window to the original user-defined values immediately after the despeckling routine is executed in the code. This resoved the issue!
 - This bug-fix was reviwed and merged into the latest release of [rapidtide version 3.1.11](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.11)
 
-### [Jump to Pre/Post-Fix Outputs here](https://gist.github.com/suchitag07/cb6e6b1395bc52ab35c16c499edd798b#replication-of-prepost-bug-fix-output-with-revised-command)
+### [Jump to Pre/Post-Fix Outputs here](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#replication-of-prepost-bug-fix-output-with-revised-command)
 
 ***
 
@@ -36,7 +36,7 @@ We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor 
 
 ### Problem Example Case
 - Lags beyond +/-8s were being flagged as outliers despite a broad user-defined search range of 
-`[-5:40]` ([see example case and initial test command](https://gist.github.com/suchitag07/cb6e6b1395bc52ab35c16c499edd798b#Initial-test-command)). This was showing up as a high proportion of fit failures in our logs (`initlaghigh, fitlaghigh`). 
+`[-5:40]` ([see example case and initial test command](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#Initial-test-command)). This was showing up as a high proportion of fit failures in our logs (`initlaghigh, fitlaghigh`). 
 
 ### Relevant Functions/Calls
 ```
@@ -72,7 +72,7 @@ theFitter.setrange(global_lagmin, global_lagmax)
 - This worked! It restored the global fitter window to `[-5, 40]` while leaving the internal despeckling behavior unchanged (`initiallag` values and `numdespeckled` were unchanged). With this patch, passes2+> used the full search range, long delays (~15 s in lesion/infarct territory) were recovered, and high-lag failures occured only at the true 40 s boundary rather than at an unintended ~8 s ceiling.
 
 ### Jump to Pre/Post-Fix Outputs here
-#### [Initial Test Command Pre/Post-Fix](https://gist.github.com/suchitag07/cb6e6b1395bc52ab35c16c499edd798b#example-1)
+#### [Initial Test Command Pre/Post-Fix](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#example-1)
 
 ***
 
@@ -81,11 +81,11 @@ theFitter.setrange(global_lagmin, global_lagmax)
 - In the process of tracing the bug, I inserted a few print statements to track what was happening to lagmin and lagmax during the (i) initial similarity function fit, and (ii) despeckling/refitting routine
 
 ### Quick links
-  - **[Initial similarity function fit check](https://gist.github.com/suchitag07/cb6e6b1395bc52ab35c16c499edd798b#i-initial-similarity-function-fit-check)**
-  - **[Despeckling routine check](https://gist.github.com/suchitag07/cb6e6b1395bc52ab35c16c499edd798b#ii-despeckling-routine-check)**
-  - **[Print statement outputs of raw/native rapidtide code](https://gist.github.com/suchitag07/cb6e6b1395bc52ab35c16c499edd798b#print-statement-outputs-of-originalnative-rapidtide-code)**
-  - **[Print statement outputs post minor patch](https://gist.github.com/suchitag07/cb6e6b1395bc52ab35c16c499edd798b#print-statement-outputs-post-minor-patch)**
-  - **[Tidepool output example](https://gist.github.com/suchitag07/cb6e6b1395bc52ab35c16c499edd798b#tidepool-output-example)**
+  - **[Initial similarity function fit check](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#i-initial-similarity-function-fit-check)**
+  - **[Despeckling routine check](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#ii-despeckling-routine-check)**
+  - **[Print statement outputs of raw/native rapidtide code](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#print-statement-outputs-of-originalnative-rapidtide-code)**
+  - **[Print statement outputs post minor patch](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#print-statement-outputs-post-minor-patch)**
+  - **[Tidepool output example](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#tidepool-output-example)**
 
 *** 
 
@@ -425,7 +425,7 @@ rapidtide \
 
 ### Example Group Level Maps - v3.1.11
 
-- Group delay/correlation coefficient maps and their distributions for 116 participants processed at two spatial smoothing levels (see [main command](https://gist.github.com/suchitag07/cb6e6b1395bc52ab35c16c499edd798b#replication-of-prepost-bug-fix-output-with-revised-command)). Top: Rapidtide default smoothing (`spatialfilt/sigma 1.5 mm, ≈3.5 mm FWHM`) Bottom: The same data processed with a higher smoothing level (`spatialfilt/sigma 4 mm, ≈9.4 mm FWHM`). 
+- Group delay/correlation coefficient maps and their distributions for 116 participants processed at two spatial smoothing levels (see [main command](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#replication-of-prepost-bug-fix-output-with-revised-command)). Top: Rapidtide default smoothing (`spatialfilt/sigma 1.5 mm, ≈3.5 mm FWHM`) Bottom: The same data processed with a higher smoothing level (`spatialfilt/sigma 4 mm, ≈9.4 mm FWHM`). 
 
 ![](https://gist.github.com/user-attachments/assets/6924672f-04b2-45a1-b4b9-bcc44cbeaa64)
 
