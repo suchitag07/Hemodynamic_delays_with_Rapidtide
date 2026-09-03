@@ -1,7 +1,7 @@
 ## Rapidtide Troubleshooting (v3.1.10)
 
 - **Background**: rapidtide is a software package that applies lag‑correlation based modelling to fMRI time‑series data to estimate when blood‑borne low‑frequency oscillations (sLFOs) arrive in each voxel. It does this by extracting each voxel’s sLFO, cross‑correlating it with a reference sLFO (eg from the superior sagittal sinus), and estimating the time delay that maximizes the correlation. This eventually produces a whole‑brain map of 'hemodynamic delay' estimates (ie an indirect 'vascular latency' map).
-- This gist documents a small bug I identified and helped resolve in [rapidtide v3.1.10](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.11).
+- This gist documents a small bug I identified and helped resolve for [rapidtide v3.1.11](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.11).
 
 ### Summary of the Bug and Fix
 
