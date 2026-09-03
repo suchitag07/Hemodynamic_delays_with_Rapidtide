@@ -20,7 +20,7 @@ We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor 
   - When rapidtide performs an initial correlation fit routine (`--passes`), it attempts to refit outlier delay estimates using a despeckling step (`--despecklepasses`) within each major pass.
   - During this despeckling step, the program resets the local search window (`lagmin`/`lagmax`) to find the "true/correct" delay for that outlier voxel.
   - This voxel-wise search window is intentionally conservative to avoid selecting delays near spurious/'sidelobe'peaks (which arise through 'autocorrelation' in our reference sLFO). 
-  - However, after despeckling completes, this modified search window persists and effectively overwrites the global search range (eg -5s to 40s --> drifts down to -1s to 6s) severely restricting the set of allowable delays. This leads to widespread fit failures (`initlaghigh`, `fitlaghigh`) and, ultimately, empty maps.
+  - However, after despeckling completes, this modified search window persists and effectively overwrites the global search range (eg -5s to 30s --> drifts down to -4s to 0.5s) severely restricting the set of allowable delays. This leads to widespread fit failures (`initlaghigh`, `fitlaghigh`) and, ultimately, empty maps.
 
 ### Relevant Functions/Calls
 ```
@@ -42,7 +42,7 @@ We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor 
   - During fitting, this object is passed into `fitcorr`, then to `_procOneVoxelFitcorr`, and finally `onesimfuncfit`. 
   - During despeckling, `onesimfuncfit` calls on `setrange` via `thefitter.setrange(initiallag - despeckle_thresh / 2, initiallag + despeckle_thresh / 2)`; creating a **conservative voxelwise search window during despeckling/refitting** (to ensure we don't select lags near the sidelobe peak). `setrange` assigns the first argument to `lagmin`, and the second to `lagmax`.
   - Once this window is updated, the ***new*** `lagmin` and `lagmax` persist, essentially mutating the global window (`theFitter`) that is used across passes.
-- This causes the global range to drift from the starting/user defined `[-5, 40]` to about `[-9.1, 8.14]` (in our example case). Pass 2 then starts with this narrowed window, true long-lag voxels get systematically flagged as `FITLAGHIGH` and clipped/no longer eligible for despeckling (fall below that threshold).
+- This causes the global range to drift from the starting/user defined `[-5, 30]` to about `[-4, 0.5]` (in our example case). Pass 2 then starts with this narrowed window, true long-lag voxels get systematically flagged as `FITLAGHIGH` and clipped/no longer eligible for despeckling (fall below that threshold).
 
 
 ### Solution/Outcome
