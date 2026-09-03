@@ -1,6 +1,6 @@
 ## Summary of the Bug and Fix
 
-- **Data**: The primary goal for this rsfMRI dataset was to examine how vascular risk impacts global delay patterns. To do this, we attempted to extract whole-brain lag maps using [rapidtide (version 3.1.10)](https://github.com/bbfrederick/rapidtide).
+- **Data**: The primary goal for this rsfMRI dataset was to examine how vascular risk impacts global delay patterns. To do this, we attempted to extract whole-brain lag maps using [rapidtide (version 3.1.10)](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.10).
 We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor = 8). The cohort spans ages 20–70+, mostly young and healthy, with a small subset of subjects exhibiting some vascular pathology (PVS/WMH/stroke etc).
 
 ### Failure Modes
@@ -19,7 +19,7 @@ We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor 
 
 ### Solution/Outcome
 
-- ***Important note: The observed failure pattern was driven by how `lagmin`/`lagmax` drifted during voxel-wise despeckling (which I tracked). In some cases, this resulted in a ~20% fit failure rate (manageable), but in many cases it rose to ~70% ([problematic](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#replication-of-prepost-bug-fix-output-with-revised-command)).***
+- ***Important note: The observed failure pattern was driven by how `lagmin`/`lagmax` drifted during voxel-wise despeckling (which I tracked). In some cases, this resulted in a ~20% fit failure rate (manageable), but in many cases it rose to ~70% (problematic).***
 - To fix this, I reset the search window to the original user-defined values immediately after the despeckling routine is executed in the code. This resoved the issue!
 - This bug-fix was reviwed and merged into the latest release of [rapidtide version 3.1.11](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.11)
 
