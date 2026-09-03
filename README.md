@@ -51,6 +51,8 @@ We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor 
 - To fix this, I reset the search window to the original user-defined values immediately after the despeckling routine is executed in the code `fitSimFuncMap.py line 970-973 theFitter.setrange(optiondict["lagmin"], optiondict["lagmax"])`. This resoved the issue!
 - This bug-fix was reviwed and merged into the latest release of [rapidtide version 3.1.11](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.11)
 
+***[Link to detailed debugging log, print-statement traces, and pre/post-fix outputs](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md)*** 
+
 ***Example Rapidtide Call***
 ```
 rapidtide \
