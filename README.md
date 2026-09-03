@@ -22,8 +22,6 @@ We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor 
   - This voxel-wise search window is intentionally conservative to avoid selecting delays near spurious/'sidelobe'peaks (which arise through 'autocorrelation' in our reference sLFO). 
   - However, after despeckling completes, this modified search window persists and effectively overwrites the global search range (eg -5s to 40s --> drifts down to -1s to 6s) severely restricting the set of allowable delays. This leads to widespread fit failures (`initlaghigh`, `fitlaghigh`) and, ultimately, empty maps.
 
-***Detailed debugging log can be found here***: https://gist.github.com/suchitag07/cb6e6b1395bc52ab35c16c499edd798b
-
 ### Relevant Functions/Calls
 ```
 1) `rapidtide.py` (initializes `theFitter` object which holds user defined parameters)
