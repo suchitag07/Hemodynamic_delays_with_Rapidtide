@@ -1,9 +1,4 @@
-## Rapidtide Troubleshooting (v3.1.10)
-
-- **Background**: rapidtide is a software package that applies lag‑correlation based modelling to fMRI time‑series data to estimate when blood‑borne low‑frequency oscillations (sLFOs) arrive in each voxel. It does this by extracting each voxel’s sLFO, cross‑correlating it with a reference sLFO (eg from the superior sagittal sinus), and estimating the time delay that maximizes the correlation. This eventually produces a whole‑brain map of 'hemodynamic delay' estimates (ie an indirect 'vascular latency' map).
-- This gist documents a small bug I identified and helped resolve for [rapidtide v3.1.11](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.11).
-
-### Summary of the Bug and Fix
+## Summary of the Bug and Fix
 
 - **Data**: The primary goal for this rsfMRI dataset was to examine how vascular risk impacts global delay patterns. To do this, we attempted to extract whole-brain lag maps using [rapidtide (version 3.1.10)](https://github.com/bbfrederick/rapidtide).
 We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor = 8). The cohort spans ages 20–70+, mostly young and healthy, with a small subset of subjects exhibiting some vascular pathology (PVS/WMH/stroke etc).
@@ -238,8 +233,6 @@ global_lagmin = optiondict["lagmin"]
 global_lagmax = optiondict["lagmax"]
 theFitter.setrange(global_lagmin, global_lagmax)
 ```
-![](https://gist.github.com/user-attachments/assets/da15d47e-8bcc-441b-a15d-29c2a3d8ee3e)
-
 ### Print statement outputs post minor patch
 
 #### Despeckling for pass 1, subpass 1
@@ -349,37 +342,37 @@ FIT FAIL SUMMARY: maxlag_init (self.lagmax + rangeextension + binwidth)= 39.5599
 - sub-VASC_01: This is the example case we've discussed thus far.
 - Per their T1, we can see they have some lesion-like pathology in their frontal lobe.
 
-![](https://gist.github.com/user-attachments/assets/86dd0f19-0c42-446b-a1fb-6d9cd32afdbe)
+![](https://github.com/user-attachments/assets/4198f121-f8a5-40e3-9569-8f389d1c9f3f)
 
 ### Native rapidtide code output
 
 - sub-VASC_01: With the valid mask turned on, the correlation function graph just says "No valid fit" (`init lag high, fit lag high`) even though there are two clear peaks around 12s and 25s. Per the logs, the search window was truncated down to `theFitter.lagmin= -9.113796567985156, theFitter.lagmax= 8.144079133076245`, naturally the histogram of lagtimes on the GUI reflects the same limits. Lags outside this range were automatically failed.
 
-![](https://gist.github.com/user-attachments/assets/8dce6471-38e4-45b7-9f2f-79b175f50737)
+![](https://github.com/user-attachments/assets/7dcd2de3-790b-41f9-a928-0de220e29af5)
 
 ### Post soft patch output 
 
 - sub-VASC_01: Post editing the code to restore `theFitter` lag limits (per user defined range of `-5:40s`, the lag value of 26s is now picked up and considered valid.
 
-![](https://gist.github.com/user-attachments/assets/cd5b0801-97a3-4594-b7ea-784e88d89e56)
+![](https://github.com/user-attachments/assets/cbb02817-197d-4425-a80d-d7f26a68acff)
 
 ### Example 2
 
 - sub-VASC_02: Per their T1, we can see they have some widespread WMH-like pathology.
 
-![](https://gist.github.com/user-attachments/assets/21c8fe19-7cb6-4227-9e6a-2143753e116f)
+![](https://github.com/user-attachments/assets/98ab25b6-0c04-46a0-8666-38da2c6b1233)
 
 ### Native rapidtide code output
 
 - sub-VASC_02: By the end of pass 3, the lagmin/max was truncated down from -5:40 to 1:6 `FITCORR EXIT: theFitter.lagmin= 1.0288625190571636 theFitter.lagmax= 6.028862519057164`. The distribution of lagtimes (valid fits) appears crammed into this range. Naturally this has resulted in a massive number of fit failures across the board (`total initfails: 22779, total fitfails: 26574` per the logs).
 
-![](https://gist.github.com/user-attachments/assets/a99cfa4c-3c5a-4bcf-8774-bf322b456cbd)
+![](https://github.com/user-attachments/assets/b8854631-796f-42ef-a5b6-9be61e3cd2b9)
 
 ### Post soft patch output 
 
 - Post soft-patch it's using the full search window.
 
-![](https://gist.github.com/user-attachments/assets/d487c9b8-f0f8-473f-a71c-f0e2b7123ecc)
+![](https://github.com/user-attachments/assets/ce1d350b-9736-41d4-bf6f-acf0a5fd3d5a)
 
 *** 
 
@@ -413,42 +406,23 @@ rapidtide \
 
 ```
 
-![](https://gist.github.com/user-attachments/assets/b0b8e95a-84be-48be-8a4f-eb9b4c4393b8)
-![](https://gist.github.com/user-attachments/assets/ab706484-ce56-4cf7-93c1-605fc96c1408)
-
+![](https://github.com/user-attachments/assets/82e2ab41-7f2e-4ed5-9e76-92615aa5e922)
+![](https://github.com/user-attachments/assets/e7c8dfd7-47b9-4874-9eaa-c1dc1270459b)
 
 ### Additional Examples
 
-![](https://gist.github.com/user-attachments/assets/f3b61f3f-9846-4081-a3df-8af755d1faf6)
+![](https://github.com/user-attachments/assets/2f03adce-0f3f-46d7-94df-ed149a800e07)
 
 ***
 
 ### Example Group Level Maps - v3.1.11
 
-- Group delay/correlation coefficient maps and their distributions for 116 participants processed at two spatial smoothing levels (see [main command](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#replication-of-prepost-bug-fix-output-with-revised-command)). Top: Rapidtide default smoothing (`spatialfilt/sigma 1.5 mm, ≈3.5 mm FWHM`) Bottom: The same data processed with a higher smoothing level (`spatialfilt/sigma 4 mm, ≈9.4 mm FWHM`). 
+- We compared the impact of different smoothing factors (sigma 1.5/2.5/3 etc) and found that at 2.5mm ~ 5.9FWHM
+	- The distribution of delay times appeared normal and centered around 0 (fewer erroneous long delays)
+   	- And the distribution of correlation values appeared negatively skewed (concentrated around R=0.6-1)
+   	- To check this I calculated the Fisher-Pearson coefficient (measure of skewness) for each subject's max-correlation distribution. Roughly, what I noticed is that - negative skewness (a long left tail with most max-corr values shifted to the right) - tended to correspond to spatially coherent maps (longer delays near WM/CSF, shorter delays around the GM).
 
-![](https://gist.github.com/user-attachments/assets/6924672f-04b2-45a1-b4b9-bcc44cbeaa64)
+![](https://github.com/user-attachments/assets/1cc99c39-df26-4b12-8673-c10f7273c9d8)
 
-![](https://gist.github.com/user-attachments/assets/f9f6440b-e42f-47ce-aa65-89a9bb7f0ccf)
+![](https://github.com/user-attachments/assets/b9097bb1-1abd-4639-a50f-86eeadad4b5a)
 
-- When comparing across different smoothing levels, I calculated the Fisher-Pearson coefficient (measure of skewness) for each subject's max-correlation disturbution. Roughly, what I noticed is that - negative skewness (a long left tail with most max-corr values shifted to the right) - tended to correspond to smoother, more coherent maps (see individual examples below).
-
-### Example Individual Maps - v3.1.11
-
-- From the above group, I pulled some subjects and individually compared their 1) correlation distributions and 2) delay maps at both levels (1.5mm and 4mm sigma) - plotted below. For the delay maps, I thresholded voxels between the 5th and 95th percentiles of the lag distribution for visualization. 
-
-***Example 1***
-
-![](https://gist.github.com/user-attachments/assets/656cbc6d-df76-4b70-8ed3-a9576b0a7212)
-
-***Example 2***
-
-![](https://gist.github.com/user-attachments/assets/6103011e-df76-4df0-8634-35e3394302ad)
-
-***Example 3***
-
-![](https://gist.github.com/user-attachments/assets/64a440f3-a6f8-4d3d-9261-32c4147494ab)
-
-- At the default smoothing level, some delay maps appear quite speckly with no clear flow or spatial pattern (examples 1 and 2 specifically). With a sigma of 4 mm (`spatialfilt 4`), the correlation distributions shift slightly to the right, and the delay maps show more coherent spatial patterns, with a tighter core delay range.
-
-- I am still unsure whether relying on the shape or skewness of the correlation distribution is the best way to judge whether a map is biologically plausible or not. 
