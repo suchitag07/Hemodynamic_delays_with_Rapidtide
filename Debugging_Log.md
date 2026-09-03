@@ -411,7 +411,7 @@ rapidtide \
 
 ### Additional Examples
 
-![](https://github.com/user-attachments/assets/2f03adce-0f3f-46d7-94df-ed149a800e07)
+![](https://github.com/user-attachments/assets/3e6073bd-279d-4fdd-bade-26ea2689153d)
 
 ***
 
