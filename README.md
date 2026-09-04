@@ -1,12 +1,11 @@
 ## Rapidtide Troubleshooting (v3.1.10)
 
 - **Background**: rapidtide is a software package that applies lag‑correlation based modelling to fMRI time‑series data to estimate when blood‑borne low‑frequency oscillations (sLFOs) arrive in each voxel. It does this by extracting each voxel’s sLFO, cross‑correlating it with a reference sLFO (eg from the superior sagittal sinus), and estimating the time delay that maximizes the correlation. This eventually produces a whole‑brain map of 'hemodynamic delay' estimates (ie an indirect 'vascular latency' map).
-- This repo documents a small bug I identified and helped resolve in [rapidtide version 3.1.11](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.11)
+- This repo documents a small bug I identified and that was merged into [rapidtide version 3.1.11](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.11)
 
 ### Summary of the Bug and Fix
 
-- **Data**: The primary goal for this rsfMRI dataset was to examine how vascular risk impacts global delay patterns. To do this, we attempted to extract whole-brain lag maps using [rapidtide (version 3.1.10)](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.10).
-We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor = 8). The cohort spans ages 20–70+, mostly young and healthy, with a small subset of subjects exhibiting some vascular pathology (PVS/WMH/stroke etc).
+- **Data**: The primary goal for this rsfMRI dataset was to examine how vascular risk impacts global delay patterns. To do this, we attempted to extract whole-brain lag maps using rapidtide. We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor = 8). The cohort spans ages 20–70+, mostly young and healthy, with a small subset of subjects exhibiting some vascular pathology (PVS/WMH/stroke etc).
 
 ### Failure Modes
 - When running rapidtide on minimally preprocessed rsfMRI data (via fMRIPrep), we encountered two major failure modes:
