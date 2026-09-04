@@ -1,7 +1,7 @@
 ## Rapidtide Troubleshooting (v3.1.10)
 
 - **Background**: rapidtide is a software package that applies lag‑correlation based modelling to fMRI time‑series data to estimate when blood‑borne low‑frequency oscillations (sLFOs) arrive in each voxel. It does this by extracting each voxel’s sLFO, cross‑correlating it with a reference sLFO (eg from the superior sagittal sinus), and estimating the time delay that maximizes the correlation. This eventually produces a whole‑brain map of 'hemodynamic delay' estimates (ie an indirect 'vascular latency' map).
-- This repo documents a small bug I identified and helped resolve in rapidtide v3.1.10.
+- This repo documents a small bug I identified and helped resolve in [rapidtide version 3.1.11](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.11)
 
 ### Summary of the Bug and Fix
 
@@ -49,7 +49,6 @@ We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor 
 
 - ***Important note: The observed failure pattern was driven by how `lagmin`/`lagmax` drifted during voxel-wise despeckling (which I tracked). In some cases, this resulted in a ~20% fit failure rate (manageable), but in many cases it rose to ~70% (problematic).***
 - To fix this, I reset the search window to the original user-defined values immediately after the despeckling routine is executed in the code `fitSimFuncMap.py line 970-973 theFitter.setrange(optiondict["lagmin"], optiondict["lagmax"])`. This resoved the issue!
-- This bug-fix was reviwed and merged into the latest release of [rapidtide version 3.1.11](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.11)
 
 ***[Link to detailed debugging log, print-statement traces, and pre/post-fix outputs](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md)*** 
 
