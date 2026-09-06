@@ -23,7 +23,7 @@ We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor 
 - To fix this, I reset the search window to the original user-defined values immediately after the despeckling routine is executed in the code. This resoved the issue!
 - This bug-fix was reviwed and merged into the latest release of [rapidtide version 3.1.11](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.11)
 
-### [Jump to Pre/Post-Fix Outputs here](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#replication-of-prepost-bug-fix-output-with-revised-command)
+### [Jump to Pre/Post-Fix Outputs here](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md#replication-of-prepost-bug-fix-output-with-revised-command)
 
 ***
 
@@ -31,7 +31,7 @@ We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor 
 
 ### Problem Example Case
 - Lags beyond +/-8s were being flagged as outliers despite a broad user-defined search range of 
-`[-5:40]` ([see example case and initial test command](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#Initial-test-command)). This was showing up as a high proportion of fit failures in our logs (`initlaghigh, fitlaghigh`). 
+`[-5:40]` ([see example case and initial test command](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md#Initial-test-command)). This was showing up as a high proportion of fit failures in our logs (`initlaghigh, fitlaghigh`). 
 
 ### Relevant Functions/Calls
 ```
@@ -67,7 +67,7 @@ theFitter.setrange(global_lagmin, global_lagmax)
 - This worked! It restored the global fitter window to `[-5, 40]` while leaving the internal despeckling behavior unchanged (`initiallag` values and `numdespeckled` were unchanged). With this patch, passes2+> used the full search range, long delays (~15 s in lesion/infarct territory) were recovered, and high-lag failures occured only at the true 40 s boundary rather than at an unintended ~8 s ceiling.
 
 ### Jump to Pre/Post-Fix Outputs here
-#### [Initial Test Command Pre/Post-Fix](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#example-1)
+#### [Initial Test Command Pre/Post-Fix](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md#example-1)
 
 ***
 
@@ -76,11 +76,11 @@ theFitter.setrange(global_lagmin, global_lagmax)
 - In the process of tracing the bug, I inserted a few print statements to track what was happening to lagmin and lagmax during the (i) initial similarity function fit, and (ii) despeckling/refitting routine
 
 ### Quick links
-  - **[Initial similarity function fit check](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#i-initial-similarity-function-fit-check)**
-  - **[Despeckling routine check](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#ii-despeckling-routine-check)**
-  - **[Print statement outputs of raw/native rapidtide code](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#print-statement-outputs-of-originalnative-rapidtide-code)**
-  - **[Print statement outputs post minor patch](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#print-statement-outputs-post-minor-patch)**
-  - **[Tidepool output example](https://github.com/suchitag07/Hemodynamic-delays-using-Rapidtide-BHP/blob/main/Debugging_Log.md#tidepool-output-example)**
+  - **[Initial similarity function fit check](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md#i-initial-similarity-function-fit-check)**
+  - **[Despeckling routine check](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md#ii-despeckling-routine-check)**
+  - **[Print statement outputs of raw/native rapidtide code](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md#print-statement-outputs-of-originalnative-rapidtide-code)**
+  - **[Print statement outputs post minor patch](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md#print-statement-outputs-post-minor-patch)**
+  - **[Tidepool output example](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md#tidepool-output-example)**
 
 *** 
 
