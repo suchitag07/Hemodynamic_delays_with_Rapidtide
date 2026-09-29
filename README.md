@@ -1,7 +1,7 @@
 ## Rapidtide Troubleshooting (v3.1.10)
 
 - **Background**: rapidtide is a software package that applies lag‑correlation based modelling to fMRI time‑series data to estimate when blood‑borne low‑frequency oscillations (sLFOs) arrive in each voxel. It does this by extracting each voxel’s sLFO, cross‑correlating it with a reference sLFO (eg from the superior sagittal sinus), and estimating the time delay that maximizes the correlation. This eventually produces a whole‑brain map of 'hemodynamic delay' estimates (ie an indirect 'vascular latency' map).
-- This repo documents a small bug I identified and debugged in rapidtide's delay-fitting routine.
+- This repo documents a small bug I identified and fixed in rapidtide's delay-fitting routine.
 - Link to release version with fix : [rapidtide version 3.1.11](https://github.com/bbfrederick/rapidtide/releases/tag/v3.1.11)
 
 ### Summary of the Bug and Fix
@@ -13,16 +13,19 @@
   1) Program errors out (>90% of voxels fail) before the run completes. 
   2) Program runs to completion, but produces largely empty maps with strange lag distributions and error messages (`initlaghigh/fitlaghigh` for eligible delays well within the search range). 
 
-- **Initial Troubleshooting Attempts**: We attempted to troubleshoot this behavior by adjusting a number of external parameters, including (but not limited to) changing the reference regressor (SSS, GM, cerebellum), search range limits,  motion regression confounds, and smoothing levels. None of these resolved the issue.
+- **Initial Troubleshooting Attempts**: We attempted to troubleshoot this behavior by adjusting a number of external parameters, including (but not limited to) changing the reference regressor (SSS, GM, cerebellum), search range limits,  motion regression confounds, and smoothing levels. None of these resolved the issue. 
+
+- **Clue**: Given that our logs consistently attributed a large chunk of fails to being out of bounds: ‘initlaglow/high, or fitlaglow/high’), I took that as a hint and went into the source code to inspect how the min/max thresholds were being applied to pass/fail voxels.
 
 ### Culprit
 - After examining the source code, I identified the following behavior:
   - When rapidtide performs an initial correlation fit routine (`--passes`), it attempts to refit outlier delay estimates using a despeckling step (`--despecklepasses`) within each major pass.
   - During this despeckling step, the program resets the local search window (`lagmin`/`lagmax`) to find the "true/correct" delay for that outlier voxel.
   - This voxel-wise search window is intentionally conservative to avoid selecting delays near spurious/'sidelobe'peaks (which arise through 'autocorrelation' in our reference sLFO). 
-  - However, after despeckling completes, this modified search window persists and effectively overwrites the global search range (eg -5s to 30s --> drifts down to -4s to 0.5s) severely restricting the set of allowable delays. This leads to widespread fit failures (`initlaghigh`, `fitlaghigh`) and, ultimately, empty maps.
+  - However, after despeckling (refitting) completes, this modified search window persists and effectively overwrites the global search range (eg -5s to 30s --> drifts down to -4s to 0.5s) severely restricting the set of allowable delays. This leads to widespread fit failures (`initlaghigh`, `fitlaghigh`) and, ultimately, empty maps.
+  - ***In essence, this is an object-mutation bug: the local `lagmin/lagmax` values used during despeckling persist and overwrite the global search range. Resetting these parameters after the inner despeckling passes breaks this state leak and restores the intended global search window***
 
-### Relevant Functions/Calls
+### Relevant Modules/Functions/Calls
 ```
 1) `rapidtide.py` (initializes `theFitter` object which holds user defined parameters)
 
@@ -47,8 +50,8 @@
 
 ### Solution/Outcome
 
-- ***Important note: The observed failure pattern was driven by how `lagmin`/`lagmax` drifted during voxel-wise despeckling (which I tracked). In some cases, this resulted in a ~20% fit failure rate (manageable), but in many cases it rose to ~70% (problematic).***
-- To fix this, I reset the search window to the original user-defined values immediately after the despeckling routine is executed in the code `fitSimFuncMap.py line 970-973 theFitter.setrange(optiondict["lagmin"], optiondict["lagmax"])`. This resoved the issue!
+- Important note: The observed failure pattern was driven by how `lagmin`/`lagmax` drifted during voxel-wise despeckling (which I tracked). In some cases, this resulted in a ~20% fit failure rate (manageable), but in many cases it rose to ~70% (problematic).
+- ***To fix this, I reset the search window to the original user-defined values immediately after the despeckling routine is executed in the code `fitSimFuncMap.py line 970-973 theFitter.setrange(optiondict["lagmin"], optiondict["lagmax"])`. This resoved the issue!***
 
 ***[Link to detailed debugging log, print-statement traces, and pre/post-fix outputs](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md)*** 
 
@@ -78,10 +81,17 @@ rapidtide \
 	--outputlevel max
 ```
 
+### Test Example Run of Pre/Post-Fix
+
+- This participant had a frontal-lobe stroke. In the original run, rapidtide failed to map delays in roughly 70% of voxels, with a large proportion of fit failures flagged as highlagfails. By the end of the run, the `lagmin/lagmax` parameters had been truncated to -4.407391 and 0.592608, respectively, clipping and rejecting delays outside this range.
 
 ![](https://github.com/user-attachments/assets/5307a29f-5f87-41b1-8ac4-409b759ea77d)
 
+- After patching the parameter state leak, rapidtide correctly retained the intended -5 to 30 s search range. The patched run successfully recovered longer hemodynamic delays within the lesioned region.
+
 ![](https://github.com/user-attachments/assets/ebe7f3ca-c426-40ec-879b-324865d30d62)
 
-![](https://github.com/user-attachments/assets/892dfe89-be93-4186-b8c8-0e97fd27d5b4)
+### Additional Examples of Pre/Post-Fix
+
+![](https://github.com/user-attachments/assets/b101c62f-986b-4515-86c3-23542c3b73e1)
 ***
