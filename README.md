@@ -97,7 +97,7 @@ rapidtide \
 
 ### Additional Examples of Pre/Post-Fix
 
-- Here are some additional examples of how the bug affected our outputs in version 3.1.10 (specifically truncating the search range for lag detection and causing widespread fit failures); and how our patched run resolved the issue consistently across participants. You can see that the correlation function picks up delays across the full search range.
+- Here are some additional examples of how the bug affected our outputs in version 3.1.10 (specifically truncating the search range for lag detection and causing widespread fit failures); and how our patched run resolved the issue consistently across participants. You can see that both the `Overlay Histogram` and `Correlation function` pick up/reflect delays across the full search range.
 
 ![](https://github.com/user-attachments/assets/9657a3a3-4bd8-402e-9993-89b4fa6454c3)
 ***
