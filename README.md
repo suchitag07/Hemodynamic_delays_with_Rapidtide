@@ -15,7 +15,7 @@
 
 - **Initial Troubleshooting Attempts**: We attempted to troubleshoot this behavior by adjusting a number of external parameters, including (but not limited to) changing the reference regressor (SSS, GM, cerebellum), search range limits,  motion regression confounds, and smoothing levels. None of these resolved the issue. 
 
-- **Clue**: Given that our logs consistently attributed a large chunk of fails to being out of bounds: ‘initlaglow/high, or fitlaglow/high’), I took that as a hint and went into the source code to inspect how the min/max thresholds were being applied to pass/fail voxels.
+- **Clue**: Given that our logs consistently attributed a large chunk of fails to being out of bounds: `initlaglow/high`, or `fitlaglow/high`), I took that as a hint and went into the source code to inspect how the lagmin/max thresholds were being applied to pass and fail voxels.
 
 ### Culprit
 - After examining the source code, I identified the following behavior:
@@ -56,6 +56,9 @@
 ***[Link to detailed debugging log, print-statement traces, and pre/post-fix outputs](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md)*** 
 
 ***Example Rapidtide Call***
+
+- We specified an input `--searchrange` of `-5 to 30 seconds`.
+
 ```
 rapidtide \
 	/path_to_data/fmriprep/sub-${subjID}/ses-01/func/sub-${subjID}_ses-01_task-rest_desc-preproc_bold.nii.gz \
@@ -83,15 +86,18 @@ rapidtide \
 
 ### Test Example Run of Pre/Post-Fix
 
-- This participant had a frontal-lobe stroke. In the original run, rapidtide failed to map delays in roughly 70% of voxels, with a large proportion of fit failures flagged as highlagfails. By the end of the run, the `lagmin/lagmax` parameters had been truncated to -4.407391 and 0.592608, respectively, clipping and rejecting delays outside this range.
+- **In the original run**: This participant had a frontal-lobe stroke. Rapidtide failed to map delays in roughly 70% of voxels, with a large proportion of fit failures flagged as `highlagfails`. By the end of the run, the internal `lagmin/lagmax` parameters had been truncated from a user defined input of `-5 to 30 s` down to `-4.407391 and 0.592608`, clipping and rejecting delays outside this range.
+- Note: I tracked the mutation of the fitting object parameters by inserting print statements throughout the source code (you would not see these in the standard terminal output/run). I've described an example of my tracing steps in this section of my `Debugging_Log` : See [Step-by-Step Tracing](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md#step-by-step-tracing)
 
 ![](https://github.com/user-attachments/assets/5307a29f-5f87-41b1-8ac4-409b759ea77d)
 
-- After patching the parameter state leak, rapidtide correctly retained the intended -5 to 30 s search range. The patched run successfully recovered longer hemodynamic delays within the lesioned region.
+- **Post-patch run**: After patching the parameter state leak, rapidtide internally retained the user defined input `--searchrange` (-5 to 30 s in this case). The patched run successfully mapped the full range of delays, importantly recovering longer hemodynamic delays within the lesioned region.
 
 ![](https://github.com/user-attachments/assets/ebe7f3ca-c426-40ec-879b-324865d30d62)
 
 ### Additional Examples of Pre/Post-Fix
 
-![](https://github.com/user-attachments/assets/917831f6-2b2c-458d-8e5f-29ad258c6e32)
+- Here are some additional examples of how the bug affected our outputs in version 3.1.10 (specifically truncating the search range for lag detection and causing widespread fit failures); and how our patched run resolved the issue consistently across participants. You can see that the correlation function picks up delays across the full search range.
+
+![](https://github.com/user-attachments/assets/9657a3a3-4bd8-402e-9993-89b4fa6454c3)
 ***
