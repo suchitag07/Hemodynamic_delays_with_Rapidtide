@@ -10,6 +10,9 @@ We have been working with 3T resting-state scans (5 min, TR = 0.46 s, MB factor 
 
 - **Initial Troubleshooting Attempts**: We attempted to troubleshoot this behavior by adjusting a number of external parameters, including (but not limited to) changing the reference regressor (SSS, GM, cerebellum), search range limits,  motion regression confounds, and smoothing levels. None of these resolved the issue.
 
+- **Clue**: Given that a large chunk of fit failures were for lags exceeding the active search window: (`initlaglow/high`, or `fitlaglow/high`), I took that as a hint and went into the source code to inspect how the lagmin/max thresholds were being applied to pass and fail voxels.
+
+
 ### Culprit
 - After examining the source code, I identified the following behavior:
   - When rapidtide performs an initial correlation fit routine (`--passes`), it attempts to refit outlier delay estimates using a despeckling step (`--despecklepasses`) within each major pass.
