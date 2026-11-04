@@ -84,13 +84,15 @@ rapidtide \
 	--outputlevel max
 ```
 
-### Test Example Run of Pre/Post-Fix
+### Test Example Run 
 
+### Pre-Fix
 - **In the original run**: This participant had a frontal-lobe stroke. Rapidtide failed to map delays in roughly 70% of voxels, with a large proportion of fit failures flagged as `highlagfails`. By the end of the run, the internal `lagmin/lagmax` parameters had been truncated from a user defined input of `-5 to 30 s` down to `-4.407391 and 0.592608`, clipping and rejecting delays outside this range.
 - Note: I tracked the mutation of the fitting object parameters by inserting print statements throughout the source code (you would not see these in the standard terminal output/run). I've described an example of my tracing steps in this section of my `Debugging_Log` : See [Step-by-Step Tracing](https://github.com/suchitag07/Hemodynamic_delays_with_Rapidtide/blob/main/Debugging_Log.md#step-by-step-tracing)
 
 ![](https://github.com/user-attachments/assets/5307a29f-5f87-41b1-8ac4-409b759ea77d)
 
+### Post-Fix
 - **Post-patch run**: After patching the parameter state leak, rapidtide internally retained the user defined input `--searchrange` (-5 to 30 s in this case). The patched run successfully mapped the full range of delays, importantly recovering longer hemodynamic delays within the lesioned region.
 
 ![](https://github.com/user-attachments/assets/ebe7f3ca-c426-40ec-879b-324865d30d62)
