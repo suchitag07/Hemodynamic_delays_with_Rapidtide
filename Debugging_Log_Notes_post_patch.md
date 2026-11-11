@@ -29,6 +29,8 @@ So:
 - Now, the patch in 3.1.11 fixed a state-leak of the search range across passes.
 - Basically in 3.1.10 and before, the modified window (through despeckling) was leaking across passes, so a starting range of `[-5,40]` would slam down to, e.g., `[-4,+1]` by the end of pass 1 despeckling subpass 4, and carry on to main pass 2, etc., artificially restricting the range of allowed delays).
 
-**However, after patching the state-leak, there might be one thing I missed**
+### Checking lags after the final round of despeckling
 - After the rapidtide's **FINAL pass + despeckle round**, we don't screen/check those re-fitted voxels again against the global thresholds, because we've reached the end of the loop.
 - So it's possible a tiny handful of lags that have veered off the edges of the search range remain in the final map...
+
+Have raised this here https://github.com/bbfrederick/rapidtide/issues/307#issue-6335752423
