@@ -1,6 +1,6 @@
 ## Post 3.1.11 Issue
 
-### Issue: Lags on the edge of the search bounds
+### Issue: Lags on the edge of the search range
   - Some users have found that see a small % of voxels with lag values that are at the edge of the search range (eg if your search range is `-5 to 15s`, then some voxels have values at the edge like `-5.9 or 16.01s`).
   - I see this too sometimes, but I know that Dr. Frederick has said in the past that if the correlation function is peaking at the edge of the search range, it can latch on to values there. If it does this for a large % of voxels, it means you have to adjust/expand your search range. 
 
