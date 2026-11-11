@@ -1,7 +1,7 @@
 ## Post 3.1.11 Issue
 
 ### Issue: Lags on the edge of the search range
-  - Some users have found that see a small % of voxels with lag values that are at the edge of the search range (eg if your search range is `-5 to 15s`, then some voxels have values at the edge like `-5.9 or 16.01s`).
+  - Some users have found that they see a small % of voxels with lag values that are at the edge of the search range (eg if your search range is `-5 to 15s`, then some voxels have values at the edge like `-5.9 or 16.01s`).
   - I see this too sometimes, but I know that Dr. Frederick has said in the past that if the correlation function is peaking at the edge of the search range, it can latch on to values there. If it does this for a large % of voxels, it means you have to adjust/expand your search range. 
 
 ### Logic - What's happening
@@ -11,7 +11,7 @@
 - Outlier voxels that are eligible will be re-fitted (undergo despeckling).
 
 ### Example Scenario
-- Now, assuming a global user-defined `--search range −5 to 15 s` and a `--despeckle_thresh of 5 s`. During despeckling, onesimfuncfit sets a temporary/conservative range of `[initiallag-(despeckle_thresh/2), initiallag+(despeckle_thresh/2)]`.
+- Now, assuming a global user-defined `--search range −5 to 15 s` and a `--despeckle_thresh of 5 s`. During despeckling, `onesimfuncfit` sets a temporary/conservative range of `[initiallag-(despeckle_thresh/2), initiallag+(despeckle_thresh/2)]` (see main debugging log).
 - So that would be, in this example case, `[initiallag-2.5, initiallag+2.5]`.
 - Note: It does this so that, during re-fitting, we don't select/re-fit lags near sidelobe peaks (peaks in the corr func that arise through autocorrelation).
 
@@ -30,5 +30,5 @@ So:
 - Basically in 3.1.10 and before, the modified window (through despeckling) was leaking across passes, so a starting range of `[-5,40]` would slam down to, e.g., `[-4,+1]` by the end of pass 1 despeckling subpass 4, and carry on to main pass 2, etc., artificially restricting the range of allowed delays).
 
 **However, after patching the state-leak, there might be one thing I missed**
-- After the rapidtide's **FINAL pass + despeckle round**, we don't screen/check those re-fitted voxels again against the thresholds, because we've reached the end of the loop.
+- After the rapidtide's **FINAL pass + despeckle round**, we don't screen/check those re-fitted voxels again against the global thresholds, because we've reached the end of the loop.
 - So it's possible a tiny handful of lags that have veered off the edges of the search range remain in the final map...
